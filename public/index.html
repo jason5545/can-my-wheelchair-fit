@@ -31,6 +31,7 @@
   #result-verdict { font-size:34px; font-weight:800; margin:0 0 6px; letter-spacing:.2px; }
   .FITS #result-verdict { color:var(--fits); } .STRAIGHT_IN #result-verdict { color:var(--straight); } .SQUEEZE #result-verdict { color:var(--squeeze); } .CANT_ENTER #result-verdict { color:var(--cant); } .NO_ELEVATOR #result-verdict { color:var(--none); }
   .placeholder { color:var(--muted); font-size:18px; }
+  .tagline { font-size:21px; font-weight:600; margin:0 0 14px; color:var(--ink); }
   .where { font-size:17px; margin:0 0 12px; }
   .where b { font-weight:700; }
   ul.why { margin:0 0 14px; padding-left:22px; }
@@ -167,6 +168,18 @@ function setCard(key, verdictText, html) {
 }
 const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
+function tagline(r) {
+  const ev = r.evidence || {};
+  switch (r.verdictKey) {
+    case 'FITS': return 'Roll in, turn around, roll out. No problem.';
+    case 'STRAIGHT_IN': return 'You get in, but you back out — no room to turn around.';
+    case 'SQUEEZE': return `Take the footrests off first — the cabin is ${ev.chair.length - ev.cabin.depth} mm shorter than your chair.`;
+    case 'CANT_ENTER': return 'The door is too narrow for this chair. Not with this elevator.';
+    case 'NO_ELEVATOR': return r.needsConfirmation ? 'No elevator at this number — but a likely match next door. Confirm below.' : 'No usable elevator here — plan for stairs, or ask the site before you go.';
+    default: return '';
+  }
+}
+
 function renderVerdict(r) {
   const ev = r.evidence || {};
   const where = r.building
@@ -199,7 +212,8 @@ function renderVerdict(r) {
   if (r.otherBuildings && r.otherBuildings.length) evidence += `<p class="note">Other buildings registered at this address: ${r.otherBuildings.map((b) => `${esc(b.en)} (${b.elevators} elevators)`).join(', ')}.</p>`;
   const diagram = ev.cabin ? renderCabinDiagram({ cabinWidth: ev.cabin.width, cabinDepth: ev.cabin.depth, doorWidth: ev.door, chairLength: ev.chair.length, chairWidth: ev.chair.width, verdict: r.verdictKey }) : '';
   const photo = ev.chair && CHAIR_PRESETS[r.chair?.name] ? `<figure class="chair-fig"><img width="120" height="110" src="/chairs/${esc(r.chair.name)}.png" alt="${esc(r.chair.name)}"><figcaption>Karma ${esc(r.chair.name)} · ${ev.chair.length} × ${ev.chair.width} mm</figcaption></figure>` : '';
-  const html = diagram ? `<div class="split"><div class="text">${where + why + evidence}</div><div class="figure">${diagram}${photo}</div></div>` : where + why + evidence;
+  const tag = `<p class="tagline">${esc(tagline(r))}</p>`;
+  const html = tag + (diagram ? `<div class="split"><div class="text">${where + why + evidence}</div><div class="figure">${diagram}${photo}</div></div>` : where + why + evidence);
   setCard(r.verdictKey, `${r.icon} ${r.verdict}`, html);
   for (const b of body.querySelectorAll('button.confirm')) b.addEventListener('click', () => { addr.value = b.dataset.address; run(); });
 }
