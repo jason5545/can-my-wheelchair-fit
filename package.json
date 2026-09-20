@@ -1,0 +1,15 @@
+{
+  "name": "can-my-wheelchair-fit",
+  "version": "0.1.0",
+  "description": "Can my wheelchair get into the elevator at this address? Taiwan elevator registry + JIS cabin dimensions + wheelchair presets.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/",
+    "seed": "node scripts/seed-cache.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  }
+}
