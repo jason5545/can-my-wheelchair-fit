@@ -1,7 +1,7 @@
 // Cabin top-view diagram: TO-SCALE geometry from plain numbers, rendered as inline SVG.
 // layout() is pure (same numbers in → same coordinates out) so it is unit-testable;
 // renderCabinDiagram() turns the layout into an SVG string with FIXED width/height (no reflow).
-// Drawing is arithmetic here: the chair is a grey rounded rectangle + two rear wheels + a seat.
+// Drawing is arithmetic here: the chair is a grey rounded rectangle + rear-wheel strips + front casters + a seat.
 
 export const BOX = { w: 300, h: 260 };   // px, fixed
 const PAD = 26;                            // px around the drawing (numbers, sill labels)
@@ -39,7 +39,13 @@ export function layout({ cabinWidth, cabinDepth, doorWidth, chairLength, chairWi
   return {
     scale, cabin: { x: x0, y: y0, w: cabW, h: cabD }, sill: { x1: x0, x2: x0 + cabW, y: y1 },
     door: { x: doorX, w: doorW, y: y1 },
-    chair: { x: chX, y: chY, w: chW, h: chL, wheelR: Math.max(2.5, px(120)), seat: { x: chX + chW * 0.15, y: chY + chL * 0.3, w: chW * 0.7, h: chL * 0.4 } },
+    chair: {
+      x: chX, y: chY, w: chW, h: chL,
+      // top view: rear wheels are thin strips along the sides, casters are small blocks at the front (top)
+      wheelW: Math.max(2, px(60)), wheelL: chL * 0.45, wheelY: chY + chL * 0.42,
+      casterW: Math.max(2, px(50)), casterL: Math.max(3, px(150)), casterY: chY + chL * 0.06,
+      seat: { x: chX + chW * 0.18, y: chY + chL * 0.3, w: chW * 0.64, h: chL * 0.42 },
+    },
     overhangMm: overhang, turn, color: COLORS[verdict] ?? COLORS.NO_ELEVATOR, verdict,
   };
 }
@@ -67,8 +73,10 @@ export function renderCabinDiagram(input) {
   <g class="chair">
     <rect x="${chair.x}" y="${chair.y}" width="${chair.w}" height="${chair.h}" rx="${Math.min(8, chair.w / 4)}" fill="#8a919c" stroke="#3a3f47" stroke-width="1.5"/>
     <rect x="${chair.seat.x}" y="${chair.seat.y}" width="${chair.seat.w}" height="${chair.seat.h}" rx="3" fill="#cfd4db" stroke="#3a3f47" stroke-width="1"/>
-    <circle cx="${chair.x + chair.wheelR + 1}" cy="${chair.y + chair.h * 0.62}" r="${chair.wheelR}" fill="#2b2f36"/>
-    <circle cx="${chair.x + chair.w - chair.wheelR - 1}" cy="${chair.y + chair.h * 0.62}" r="${chair.wheelR}" fill="#2b2f36"/>
+    <rect x="${chair.x - chair.wheelW * 0.35}" y="${chair.wheelY}" width="${chair.wheelW}" height="${chair.wheelL}" rx="1.5" fill="#2b2f36"/>
+    <rect x="${chair.x + chair.w - chair.wheelW * 0.65}" y="${chair.wheelY}" width="${chair.wheelW}" height="${chair.wheelL}" rx="1.5" fill="#2b2f36"/>
+    <rect x="${chair.x + chair.w * 0.12}" y="${chair.casterY}" width="${chair.casterW}" height="${chair.casterL}" rx="1" fill="#2b2f36"/>
+    <rect x="${chair.x + chair.w * 0.88 - chair.casterW}" y="${chair.casterY}" width="${chair.casterW}" height="${chair.casterL}" rx="1" fill="#2b2f36"/>
   </g>
   <text x="${cabin.x + cabin.w / 2}" y="${cabin.y - 8}" text-anchor="middle" font-size="11" fill="#5b6470">${input.cabinWidth} mm</text>
   <text x="${cabin.x - 6}" y="${cabin.y + cabin.h / 2}" text-anchor="end" font-size="11" fill="#5b6470" transform="rotate(-90 ${cabin.x - 6} ${cabin.y + cabin.h / 2})">${input.cabinDepth} mm</text>
