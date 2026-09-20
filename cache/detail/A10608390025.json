@@ -1,0 +1,20 @@
+{
+ "id": "A10608390025",
+ "detail": {
+  "id": "A10608390025",
+  "kind": "緊急用升降機",
+  "buildingName": "忠孝科技大樓",
+  "licenseNo": "083使字第0404號",
+  "licenseDate": "083/09/05",
+  "address": "台北市大安區忠孝東路3段54號",
+  "permitNo": "036-402665",
+  "maintenanceNo": "2221-3",
+  "spec": "P8 550-CO 90 -14 S/B1 -13",
+  "completionYear": "083",
+  "maintainer": "40B1000450-富比世科技股份有限公司",
+  "inspector": "40B2000005-臺灣停車設備暨昇降設備安全協會"
+ },
+ "fetchedAt": "2026-09-20T09:50:15.976Z",
+ "source": "~/work/elevator-research/fixtures-20260920/detail-A10608390025.html",
+ "capturedAt": "2026-09-19T23:56:00.896Z"
+}

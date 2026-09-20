@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can My Wheelchair Fit?</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1b1f24; --muted:#5b6470; --line:#dfe3e8; --accent:#2457d6;
+          --fits:#1f8a4c; --straight:#c98a00; --squeeze:#d9480f; --cant:#b3261e; --none:#5b6470; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.45 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; background:var(--bg); color:var(--ink); }
+  main { max-width:960px; margin:0 auto; padding:28px 24px 48px; }
+  h1 { font-size:30px; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 22px; }
+  form { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; display:grid; grid-template-columns: 1fr 120px 200px auto; gap:12px 14px; align-items:end; }
+  label { display:block; font-size:13px; color:var(--muted); margin-bottom:4px; font-weight:600; }
+  input, select { width:100%; font:inherit; padding:11px 12px; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink); }
+  input:focus, select:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  button { font:inherit; font-weight:700; padding:12px 22px; border:0; border-radius:9px; background:var(--accent); color:#fff; cursor:pointer; white-space:nowrap; }
+  button:disabled { opacity:.6; cursor:default; }
+  .row-full { grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; color:var(--muted); font-size:14px; }
+  .custom { display:none; gap:10px; align-items:center; }
+  .custom.on { display:flex; }
+  .custom input { width:92px; }
+  .chips { margin:14px 0 0; display:flex; flex-wrap:wrap; gap:8px; }
+  .chip { background:#fff; border:1px solid var(--line); border-radius:999px; padding:8px 14px; font-size:14px; color:var(--ink); cursor:pointer; font-weight:500; }
+  .chip:hover { border-color:var(--accent); }
+  #result-card { margin-top:22px; background:var(--card); border:1px solid var(--line); border-left:10px solid var(--line); border-radius:14px; padding:22px 24px; min-height:150px; }
+  #result-card.FITS { border-left-color:var(--fits); } #result-card.STRAIGHT_IN { border-left-color:var(--straight); }
+  #result-card.SQUEEZE { border-left-color:var(--squeeze); } #result-card.CANT_ENTER { border-left-color:var(--cant); } #result-card.NO_ELEVATOR { border-left-color:var(--none); }
+  #result-verdict { font-size:34px; font-weight:800; margin:0 0 6px; letter-spacing:.2px; }
+  .FITS #result-verdict { color:var(--fits); } .STRAIGHT_IN #result-verdict { color:var(--straight); } .SQUEEZE #result-verdict { color:var(--squeeze); } .CANT_ENTER #result-verdict { color:var(--cant); } .NO_ELEVATOR #result-verdict { color:var(--none); }
+  .placeholder { color:var(--muted); font-size:18px; }
+  .where { font-size:17px; margin:0 0 12px; }
+  .where b { font-weight:700; }
+  ul.why { margin:0 0 14px; padding-left:22px; }
+  ul.why li { margin:4px 0; }
+  .evidence { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:10px 18px; background:#f2f4f7; border-radius:10px; padding:12px 14px; font-size:14px; }
+  .evidence div span { display:block; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.4px; }
+  .evidence code { font-size:14px; }
+  .note { color:var(--muted); font-size:13px; margin-top:10px; }
+  #captcha { display:none; margin-top:16px; background:#fff8e6; border:1px solid #f1d58a; border-radius:12px; padding:14px 16px; align-items:center; gap:12px; flex-wrap:wrap; }
+  #captcha.on { display:flex; }
+  #captcha img { height:52px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  #captcha input { width:140px; }
+  .status { font-size:13px; color:var(--muted); margin-top:10px; }
+  @media (max-width:760px) { form { grid-template-columns:1fr 1fr; } form > .addr { grid-column:1 / -1; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Can My Wheelchair Fit?</h1>
+  <p class="sub">Can my wheelchair get into the elevator at this address? — Taiwan national elevator registry + JIS cabin dimensions.</p>
+
+  <form id="form" autocomplete="off">
+    <div class="addr">
+      <label for="address-input">Address (Taipei)</label>
+      <input id="address-input" data-testid="address-input" type="text" placeholder="No. 123, Songren Rd., Xinyi Dist., Taipei City" required>
+    </div>
+    <div>
+      <label for="floor-input">Floor</label>
+      <input id="floor-input" data-testid="floor-input" type="number" value="1" min="-5" max="120">
+    </div>
+    <div>
+      <label for="wheelchair-select">Wheelchair</label>
+      <select id="wheelchair-select" data-testid="wheelchair-select">
+        <option value="Leon" selected>Karma Leon</option>
+        <option value="KP-40">Karma KP-40</option>
+        <option value="KP-80">Karma KP-80</option>
+        <option value="eFlexx">Karma eFlexx</option>
+        <option value="EVO">Karma EVO</option>
+        <option value="Custom">Custom…</option>
+      </select>
+    </div>
+    <div><button id="check-button" data-testid="check-button" type="submit">Check</button></div>
+    <div class="row-full">
+      <span id="chair-dims"></span>
+      <span class="custom" id="custom">
+        <label>L <input id="c-len" type="number" value="1060"></label>
+        <label>W <input id="c-wid" type="number" value="620"></label>
+        <label>R <input id="c-rad" type="number" value="800"></label> mm
+      </span>
+      <label style="margin:0;display:flex;gap:6px;align-items:center;font-weight:500"><input type="checkbox" id="live" style="width:auto"> Live query (bypass cache)</label>
+    </div>
+  </form>
+
+  <div class="chips" id="chips"></div>
+
+  <div id="captcha">
+    <span>Not cached yet — please type the registry captcha:</span>
+    <img id="captcha-img" alt="captcha">
+    <input id="captcha-code" type="text" placeholder="code" maxlength="8">
+    <button type="button" id="captcha-submit">Submit</button>
+    <button type="button" id="captcha-refresh" style="background:#6b7280">New image</button>
+    <span id="captcha-msg"></span>
+  </div>
+
+  <section id="result-card" data-testid="result-card">
+    <p id="result-verdict" data-testid="result-verdict"></p>
+    <div id="result-body"><p class="placeholder">Enter an address and a floor, then press Check.</p></div>
+  </section>
+  <p class="status" id="status"></p>
+</main>
+
+<script type="module">
+import { judgeCabin } from '/src/judge.mjs';
+import { CHAIR_PRESETS } from '/src/chairs.mjs';
+
+const $ = (id) => document.getElementById(id);
+const addr = $('address-input'), floor = $('floor-input'), sel = $('wheelchair-select'), btn = $('check-button');
+const card = $('result-card'), verdictEl = $('result-verdict'), body = $('result-body'), status = $('status');
+let last = null; // last /api/check result (with serving elevators) for live recompute
+
+function chair() {
+  if (sel.value === 'Custom') return { name: 'Custom', length: +$('c-len').value, width: +$('c-wid').value, turnRadius: +$('c-rad').value };
+  return { name: sel.value, ...CHAIR_PRESETS[sel.value] };
+}
+function showChairDims() {
+  const c = chair();
+  $('custom').classList.toggle('on', sel.value === 'Custom');
+  $('chair-dims').textContent = `${c.name}: ${c.length} × ${c.width} mm, turning radius ${c.turnRadius} mm`;
+}
+sel.addEventListener('change', () => { showChairDims(); recompute(); });
+for (const id of ['c-len', 'c-wid', 'c-rad']) $(id).addEventListener('input', () => { showChairDims(); recompute(); });
+showChairDims();
+
+function setCard(key, verdictText, html) {
+  card.className = key;
+  verdictEl.textContent = verdictText;
+  body.innerHTML = html;
+}
+const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+function renderVerdict(r) {
+  const ev = r.evidence || {};
+  const where = r.building
+    ? `<p class="where"><b>${esc(r.building.en)}</b> — ${esc(r.address.en)}, floor ${r.floor}</p>`
+    : `<p class="where"><b>${esc(r.address.en)}</b>, floor ${r.floor}</p>`;
+  const why = `<ul class="why">${(r.reasons || []).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
+  let evidence = '';
+  if (ev.spec) {
+    evidence = `<div class="evidence">
+      <div><span>Registry spec</span><code>${esc(ev.spec)}</code></div>
+      <div><span>Cabin (W × D)</span>${ev.cabin.width} × ${ev.cabin.depth} mm</div>
+      <div><span>Door</span>${ev.door} mm</div>
+      <div><span>Your chair (L × W, R)</span>${ev.chair.length} × ${ev.chair.width}, R${ev.chair.turnRadius}</div>
+      <div><span>Floors served</span>${esc(ev.floors)}</div>
+      <div><span>Elevators serving floor</span>${ev.counts.servingFloor} of ${ev.counts.elevators} (${ev.counts.rows} registered devices)</div>
+      <div><span>Device ID</span>${esc(ev.deviceId)}</div>
+      <div><span>Building permit</span>${esc(r.building?.licenseNo)}</div>
+    </div>
+    <p class="note">${esc((ev.notes || []).join(' '))} Cabin size is a reference estimate from the JIS A 4301 capacity class (${esc(ev.code)}); the turning rule (2 × radius) is our own reference threshold.</p>`;
+  } else if (ev.counts) {
+    evidence = `<p class="note">Registry devices at this address: ${ev.counts.rows}; passenger elevators: ${ev.counts.elevators}.</p>`;
+  }
+  setCard(r.verdictKey, `${r.icon} ${r.verdict}`, where + why + evidence);
+}
+
+/** Recompute the verdict for the current chair from the last result, without re-querying. */
+function recompute() {
+  if (!last || !last.elevators || !last.elevators.length) return;
+  const c = chair();
+  const judged = last.elevators.map((e) => ({ e, v: judgeCabin(e.cabin, c) })).sort((a, b) => a.v.rank - b.v.rank);
+  const best = judged[0];
+  const r = { ...last, verdict: best.v.label, icon: best.v.icon, verdictKey: best.v.key, reasons: best.v.reasons, chair: c,
+    building: { zh: best.e.buildingName, en: best.e.buildingNameEn, licenseNo: best.e.licenseNo },
+    evidence: { ...last.evidence, spec: best.e.spec.raw, code: best.e.spec.code, cabin: best.e.cabin, door: best.e.cabin.door, chair: c, floors: best.e.floors, deviceId: best.e.id, notes: best.e.cabin.notes } };
+  renderVerdict(r);
+}
+
+async function run() {
+  const c = chair();
+  const p = new URLSearchParams({ address: addr.value.trim(), floor: floor.value || '1', chair: c.name, live: $('live').checked ? '1' : '0' });
+  if (c.name === 'Custom') { p.set('length', c.length); p.set('width', c.width); p.set('radius', c.turnRadius); }
+  btn.disabled = true; status.textContent = 'Checking…';
+  try {
+    const r = await (await fetch('/api/check?' + p)).json();
+    if (r.needCaptcha) { status.textContent = r.message; openCaptcha(); return; }
+    if (r.error) { setCard('', '', `<p class="placeholder">${esc(r.error)}</p>`); status.textContent = ''; return; }
+    last = r; $('captcha').classList.remove('on');
+    renderVerdict(r);
+    status.textContent = (r.steps || []).map((s) => `${s.step}: "${s.query}" → ${s.rows} rows${s.cached ? ' (cache)' : ' (live)'}`).join(' · ');
+    loadChips();
+  } catch (e) { status.textContent = 'Error: ' + e.message; }
+  finally { btn.disabled = false; }
+}
+$('form').addEventListener('submit', (e) => { e.preventDefault(); run(); });
+
+// Captcha (human-in-the-loop): only on a cache miss with the live session not yet passed.
+function openCaptcha() { $('captcha').classList.add('on'); $('captcha-img').src = '/api/captcha?t=' + Date.now(); $('captcha-code').value = ''; $('captcha-code').focus(); $('captcha-msg').textContent = ''; }
+$('captcha-refresh').addEventListener('click', () => { $('captcha-img').src = '/api/captcha?t=' + Date.now(); });
+$('captcha-submit').addEventListener('click', async () => {
+  const r = await (await fetch('/api/captcha/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: $('captcha-code').value }) })).json();
+  if (r.ok) { $('captcha-msg').textContent = 'Session open — querying…'; run(); }
+  else { $('captcha-msg').textContent = r.error ? 'Error: ' + r.error : 'Wrong code, try the new image.'; $('captcha-img').src = '/api/captcha?t=' + Date.now(); }
+});
+
+// Recent searches as plain click targets (manual fallback for the demo driver).
+async function loadChips() {
+  const list = await (await fetch('/api/recent')).json();
+  $('chips').innerHTML = list.map((r) => `<button type="button" class="chip" data-address="${esc(r.english || r.address)}" data-floor="${r.floor}">${esc(r.english || r.address)} · ${r.floor}F</button>`).join('');
+  for (const b of $('chips').querySelectorAll('.chip')) b.addEventListener('click', () => { addr.value = b.dataset.address; floor.value = b.dataset.floor; run(); });
+}
+loadChips();
+</script>
+</body>
+</html>

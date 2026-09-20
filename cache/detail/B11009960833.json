@@ -1,0 +1,20 @@
+{
+ "id": "B11009960833",
+ "detail": {
+  "id": "B11009960833",
+  "kind": "一般用升降機",
+  "buildingName": "華南銀行世貿大樓",
+  "licenseNo": "103使字第00318號",
+  "licenseDate": "103/12/18",
+  "address": "110臺北市信義區松仁路123號",
+  "permitNo": "040178384",
+  "maintenanceNo": "L-13501007",
+  "spec": "P24 1600-CO 150-15 S/1 -27F",
+  "completionYear": "103",
+  "maintainer": "40B1000032-台灣三菱電梯股份有限公司",
+  "inspector": "40B2000007-中華民國昇降設備安全檢查協會"
+ },
+ "fetchedAt": "2026-09-20T09:50:15.956Z",
+ "source": "~/work/elevator-research/fixtures/detail-B11009960833.html",
+ "capturedAt": "2026-09-18T12:04:42.284Z"
+}

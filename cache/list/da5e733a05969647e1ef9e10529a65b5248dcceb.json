@@ -1,0 +1,114 @@
+{
+ "params": {
+  "type": "",
+  "lic": "083使字第0404號",
+  "name": "",
+  "city": "",
+  "dist": "",
+  "addr": ""
+ },
+ "rows": [
+  {
+   "id": "K10608360011",
+   "seq": "cab0",
+   "deviceType": "機械停車設備",
+   "authority": "臺北市政府",
+   "permitNo": "M36-504520",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段54號",
+   "permitExpiry": "116/07/06",
+   "status": "許可證 ：未過期 最後檢查 ：115/07/06 最後維護 ：115年06月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "K10608360022",
+   "seq": "eca0",
+   "deviceType": "機械停車設備",
+   "authority": "臺北市政府",
+   "permitNo": "M36-504521",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段54號",
+   "permitExpiry": "116/07/06",
+   "status": "許可證 ：未過期 最後檢查 ：115/07/06 最後維護 ：115年06月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "K10608360033",
+   "seq": "137b",
+   "deviceType": "機械停車設備",
+   "authority": "臺北市政府",
+   "permitNo": "M36-504522",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段54號",
+   "permitExpiry": "116/07/06",
+   "status": "許可證 ：未過期 最後檢查 ：115/07/06 最後維護 ：115年06月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "K10608360044",
+   "seq": "a48e",
+   "deviceType": "機械停車設備",
+   "authority": "臺北市政府",
+   "permitNo": "M36-504523",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段54號",
+   "permitExpiry": "116/07/06",
+   "status": "許可證 ：未過期 最後檢查 ：115/07/06 最後維護 ：115年06月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "K10608360055",
+   "seq": "c696",
+   "deviceType": "機械停車設備",
+   "authority": "臺北市政府",
+   "permitNo": "M36-504524",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段54號",
+   "permitExpiry": "116/07/06",
+   "status": "許可證 ：未過期 最後檢查 ：115/07/06 最後維護 ：115年06月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "A10608390014",
+   "seq": "fb7c",
+   "deviceType": "昇降設備",
+   "authority": "臺北市政府",
+   "permitNo": "036-402664",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段54號",
+   "permitExpiry": "116/01/20",
+   "status": "許可證 ：未過期 最後檢查 ：115/06/08 最後維護 ：115年05月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "A10608390025",
+   "seq": "2c60",
+   "deviceType": "昇降設備",
+   "authority": "臺北市政府",
+   "permitNo": "036-402665",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段54號",
+   "permitExpiry": "116/01/20",
+   "status": "許可證 ：未過期 最後檢查 ：115/06/08 最後維護 ：115年05月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "A10608390047",
+   "seq": "8a97",
+   "deviceType": "昇降設備",
+   "authority": "臺北市政府",
+   "permitNo": "036-402667",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段52號",
+   "permitExpiry": "116/01/20",
+   "status": "許可證 ：未過期 最後檢查 ：115/06/08 最後維護 ：115年05月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "A10610260013",
+   "seq": "8a50",
+   "deviceType": "昇降設備",
+   "authority": "臺北市政府",
+   "permitNo": "036-402666",
+   "buildingName": "忠孝科技大樓",
+   "address": "台北市大安區忠孝東路3段52號",
+   "permitExpiry": "116/01/20",
+   "status": "許可證 ：未過期 最後檢查 ：115/06/08 最後維護 ：115年05月 汰舊換新 ：未換新"
+  }
+ ],
+ "fetchedAt": "2026-09-20T09:50:15.970Z",
+ "source": "~/work/elevator-research/fixtures-20260920/list-lic-083-0404-p200.html",
+ "capturedAt": "2026-09-19T23:56:00.896Z"
+}

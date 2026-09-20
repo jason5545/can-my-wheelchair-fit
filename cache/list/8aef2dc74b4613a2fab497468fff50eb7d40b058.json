@@ -1,0 +1,37 @@
+{
+ "params": {
+  "type": "",
+  "lic": "084使字第00202號",
+  "name": "",
+  "city": "",
+  "dist": "",
+  "addr": ""
+ },
+ "rows": [
+  {
+   "id": "B10308500010",
+   "seq": "ee99",
+   "deviceType": "昇降設備",
+   "authority": "臺北市政府",
+   "permitNo": "040049338",
+   "buildingName": "捷運廣場",
+   "address": "103臺北市大同區承德路二段217號",
+   "permitExpiry": "116/03/21",
+   "status": "許可證 ：未過期 最後檢查 ：115/08/05 最後維護 ：115年08月 汰舊換新 ：未換新"
+  },
+  {
+   "id": "B10308400345",
+   "seq": "4f32",
+   "deviceType": "昇降設備",
+   "authority": "臺北市政府",
+   "permitNo": "040047998",
+   "buildingName": "捷運廣場",
+   "address": "103臺北市大同區承德路二段217號",
+   "permitExpiry": "116/02/28",
+   "status": "許可證 ：未過期 最後檢查 ：115/07/15 最後維護 ：115年08月 汰舊換新 ：未換新"
+  }
+ ],
+ "fetchedAt": "2026-09-20T09:50:15.992Z",
+ "source": "~/work/elevator-research/fixtures-20260920/list-lic-084-00202-p200.html",
+ "capturedAt": "2026-09-19T23:56:00.896Z"
+}

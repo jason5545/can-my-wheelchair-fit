@@ -1,0 +1,20 @@
+{
+ "id": "K10608360055",
+ "detail": {
+  "id": "K10608360055",
+  "kind": "多段型機械停車設備",
+  "buildingName": "忠孝科技大樓",
+  "licenseNo": "083使字第0404號",
+  "licenseDate": "083/09/05",
+  "address": "台北市大安區忠孝東路3段54號",
+  "permitNo": "M36-504524",
+  "maintenanceNo": "B區",
+  "spec": "F0 1500- 3.0- S/ -",
+  "completionYear": "83",
+  "maintainer": "40M1000190-全國電機股份有限公司",
+  "inspector": "40M2000003-臺灣停車設備暨昇降設備安全協會"
+ },
+ "fetchedAt": "2026-09-20T09:50:15.975Z",
+ "source": "~/work/elevator-research/fixtures-20260920/detail-K10608360055.html",
+ "capturedAt": "2026-09-19T23:56:00.896Z"
+}

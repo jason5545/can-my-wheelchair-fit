@@ -1,0 +1,20 @@
+{
+ "id": "I10308490029",
+ "detail": {
+  "id": "I10308490029",
+  "kind": "簡易升降型機械停車設備",
+  "buildingName": "承德捷運廣場大樓",
+  "licenseNo": "084使字第0202號",
+  "licenseDate": "084/05/01",
+  "address": "台北市大同區承德路2段215號",
+  "permitNo": "M36-501891",
+  "maintenanceNo": "HM971101-2",
+  "spec": "F0 1600- 3 -0 S/ - F",
+  "completionYear": "084",
+  "maintainer": "40M1000047-頂天電機機械有限公司",
+  "inspector": "40M2000003-臺灣停車設備暨昇降設備安全協會"
+ },
+ "fetchedAt": "2026-09-20T09:50:16.001Z",
+ "source": "~/work/elevator-research/fixtures-20260920/detail-I10308490029.html",
+ "capturedAt": "2026-09-19T23:56:00.896Z"
+}
