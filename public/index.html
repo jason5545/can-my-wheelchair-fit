@@ -51,7 +51,7 @@
   .cand-head { font-size:16px; margin-bottom:6px; }
   .cand-why { color:var(--ink); margin-bottom:6px; }
   .cand-spec { font-family:ui-monospace, Menlo, monospace; font-size:13px; color:var(--muted); margin-bottom:12px; }
-  button.confirm { font-size:18px; padding:16px 26px; width:100%; background:var(--fits); }
+  button.confirm { font-size:18px; padding:16px 26px; width:100%; background:var(--fits); white-space:normal; line-height:1.3; }
   .status { font-size:13px; color:var(--muted); margin-top:10px; }
   @media (max-width:760px) { form { grid-template-columns:1fr 1fr; } form > .addr { grid-column:1 / -1; } }
 </style>
@@ -181,7 +181,7 @@ function recompute() {
   const top = judgeBuilding(last.elevators, c)[0];
   const best = { e: top.elevator, v: top.verdict };
   const r = { ...last, verdict: best.v.label, icon: best.v.icon, verdictKey: best.v.key, reasons: best.v.reasons, chair: c,
-    building: { zh: best.e.buildingName, en: best.e.buildingNameEn, licenseNo: best.e.licenseNo },
+    building: { zh: best.e.buildingName, en: best.e.buildingNameEn, licenseNo: best.e.licenseNo, licenseLabel: best.e.licenseLabel },
     evidence: { ...last.evidence, spec: best.e.spec.raw, code: best.e.spec.code, cabin: best.e.cabin, door: best.e.cabin.door, chair: c, floors: best.e.floors, deviceId: best.e.id, notes: best.e.cabin.notes } };
   renderVerdict(r);
 }
@@ -197,7 +197,7 @@ async function run() {
     if (r.error) { setCard('', '', `<p class="placeholder">${esc(r.error)}</p>`); status.textContent = ''; return; }
     last = r; $('captcha').classList.remove('on');
     renderVerdict(r);
-    status.textContent = (r.steps || []).map((s) => `${s.step}: "${s.query}" → ${s.rows} rows${s.cached ? ' (cache)' : ' (live)'}`).join(' · ');
+    status.textContent = 'Registry trace — ' + (r.steps || []).map((s) => `${s.step}: "${s.query}" → ${s.rows} rows${s.cached ? ' (cache)' : ' (live)'}`).join(' · ');
     loadChips();
   } catch (e) { status.textContent = 'Error: ' + e.message; }
   finally { btn.disabled = false; }

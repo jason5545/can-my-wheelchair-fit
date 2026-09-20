@@ -49,9 +49,11 @@ const RECENT = join(ROOT, 'recent.json');
 export function getRecent() {
   return existsSync(RECENT) ? JSON.parse(readFileSync(RECENT, 'utf8')) : [];
 }
+/** Add a new address to the chips; existing chips keep their order and floor (stable click targets). */
 export function pushRecent(item) {
-  const list = getRecent().filter((r) => r.address !== item.address);
-  list.unshift({ ...item, at: new Date().toISOString() });
+  const list = getRecent();
+  if (list.some((r) => r.address === item.address)) return;
+  list.push({ ...item, at: new Date().toISOString() });
   writeFileSync(RECENT, JSON.stringify(list.slice(0, 8), null, 1));
 }
 export function setRecent(list) {
