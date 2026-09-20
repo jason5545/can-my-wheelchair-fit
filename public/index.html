@@ -212,7 +212,7 @@ async function run() {
     if (r.error) { setCard('', '', `<p class="placeholder">${esc(r.error)}</p>`); status.textContent = ''; return; }
     last = r; $('captcha').classList.remove('on');
     renderVerdict(r);
-    status.textContent = 'Registry trace — ' + (r.steps || []).map((s) => `${s.step}: "${s.query}" → ${s.rows} rows${s.cached ? ' (cache)' : ' (live)'}`).join(' · ');
+    status.textContent = 'Registry trace — ' + (r.steps || []).map((s) => s.skipped ? `${s.step}: "${s.query}" → skipped (not cached, no live session)` : `${s.step}: "${s.query}" → ${s.rows} rows${s.cached ? ' (cache)' : ' (live)'}`).join(' · ');
     loadChips();
   } catch (e) { status.textContent = 'Error: ' + e.message; }
   finally { btn.disabled = false; }
