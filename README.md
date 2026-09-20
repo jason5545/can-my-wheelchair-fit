@@ -57,7 +57,9 @@ and the building's occupancy permit. Change the wheelchair preset and the verdic
 * **JIS A 4301** cabin dimensions by capacity class, via public manufacturer catalogs (Mitsubishi MR
   series, cross-checked with Fujitec). Reference estimates: door width and geometry still vary by vendor.
 * **Karma** official wheelchair specs: Leon 1060×620 R800, KP-40 1180×665 R900, KP-80 1205×640 R745,
-  eFlexx 1085×565 R740, EVO 1200×660 R750. Custom L/W/R inputs are supported.
+  eFlexx 1085×565 R740, EVO (Altus) 1200×660 R750. Custom L/W/R inputs are supported. The product photos
+  in `public/chairs/` are from Karma's official product pages (© Karma Medical), stored locally so the demo
+  does not depend on the venue network.
 
 ## Fairness note
 
