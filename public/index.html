@@ -52,6 +52,10 @@
   .cand-why { color:var(--ink); margin-bottom:6px; }
   .cand-spec { font-family:ui-monospace, Menlo, monospace; font-size:13px; color:var(--muted); margin-bottom:12px; }
   button.confirm { font-size:18px; padding:16px 26px; width:100%; background:var(--fits); white-space:normal; line-height:1.3; }
+  .split { display:flex; gap:18px; align-items:flex-start; }
+  .split .text { flex:1 1 auto; min-width:0; }
+  .split .figure { flex:0 0 300px; width:300px; height:260px; }
+  @media (max-width:760px) { .split { flex-wrap:wrap; } }
   .status { font-size:13px; color:var(--muted); margin-top:10px; }
   @media (max-width:760px) { form { grid-template-columns:1fr 1fr; } form > .addr { grid-column:1 / -1; } }
 </style>
@@ -114,6 +118,7 @@
 <script type="module">
 import { judgeBuilding } from '/src/judge.mjs';
 import { CHAIR_PRESETS } from '/src/chairs.mjs';
+import { renderCabinDiagram } from '/src/diagram.mjs';
 
 const $ = (id) => document.getElementById(id);
 const addr = $('address-input'), floor = $('floor-input'), sel = $('wheelchair-select'), btn = $('check-button');
@@ -170,7 +175,9 @@ function renderVerdict(r) {
     evidence = `<p class="note">Registry devices at this address: ${ev.counts.rows}; passenger elevators: ${ev.counts.elevators}.</p>`;
   }
   if (r.otherBuildings && r.otherBuildings.length) evidence += `<p class="note">Other buildings registered at this address: ${r.otherBuildings.map((b) => `${esc(b.en)} (${b.elevators} elevators)`).join(', ')}.</p>`;
-  setCard(r.verdictKey, `${r.icon} ${r.verdict}`, where + why + evidence);
+  const diagram = ev.cabin ? renderCabinDiagram({ cabinWidth: ev.cabin.width, cabinDepth: ev.cabin.depth, doorWidth: ev.door, chairLength: ev.chair.length, chairWidth: ev.chair.width, verdict: r.verdictKey }) : '';
+  const html = diagram ? `<div class="split"><div class="text">${where + why + evidence}</div><div class="figure">${diagram}</div></div>` : where + why + evidence;
+  setCard(r.verdictKey, `${r.icon} ${r.verdict}`, html);
   for (const b of body.querySelectorAll('button.confirm')) b.addEventListener('click', () => { addr.value = b.dataset.address; run(); });
 }
 

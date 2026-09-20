@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cabin diagram test</title>
+<style>
+  body { margin:0; font:15px/1.4 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; background:#f6f7f9; color:#1b1f24; padding:24px; }
+  h1 { font-size:20px; margin:0 0 16px; }
+  .grid { display:grid; grid-template-columns:repeat(4, 320px); gap:16px; }
+  .frame { background:#fff; border:1px solid #dfe3e8; border-radius:12px; padding:10px; }
+  .frame h2 { font-size:18px; margin:0 0 2px; }
+  .frame p { margin:0 0 8px; color:#5b6470; font-size:13px; }
+</style>
+</head>
+<body>
+<h1>CabinDiagram — the four states from fixed fixtures</h1>
+<div class="grid" id="grid"></div>
+<script type="module">
+import { renderCabinDiagram } from '/src/diagram.mjs';
+const cases = [
+  { title: '✅ FITS', sub: 'P24 · 2000×1750 mm · door 1100 · Leon 1060×620', in: { cabinWidth: 2000, cabinDepth: 1750, doorWidth: 1100, chairLength: 1060, chairWidth: 620, verdict: 'FITS' } },
+  { title: '⚠️ STRAIGHT-IN ONLY', sub: 'P24 · 2000×1750 mm · door 1100 · KP-40 1180×665', in: { cabinWidth: 2000, cabinDepth: 1750, doorWidth: 1100, chairLength: 1180, chairWidth: 665, verdict: 'STRAIGHT_IN' } },
+  { title: '⚠️❌ SQUEEZE', sub: 'P8 · 1400×1030 mm · door 800 · Leon 1060×620', in: { cabinWidth: 1400, cabinDepth: 1030, doorWidth: 800, chairLength: 1060, chairWidth: 620, verdict: 'SQUEEZE' } },
+  { title: "❌ CAN'T ENTER", sub: 'P8 · 1400×1030 mm · door 800 · custom 1000×800', in: { cabinWidth: 1400, cabinDepth: 1030, doorWidth: 800, chairLength: 1000, chairWidth: 800, verdict: 'CANT_ENTER' } },
+];
+document.getElementById('grid').innerHTML = cases.map((c) => `<div class="frame"><h2>${c.title}</h2><p>${c.sub}</p>${renderCabinDiagram(c.in)}</div>`).join('');
+</script>
+</body>
+</html>
