@@ -7,7 +7,7 @@ Every new place says "we have an elevator". This tool asks the registry which ca
 registered at the address, decodes the registered spec string (capacity class, door, floors served)
 into a cabin size, and compares it with your wheelchair.
 
-Built solo in 90 minutes at **Claude Taipei Build Day, 2026-09-20**, with one finger and voice.
+Built solo in 90 minutes at **Claude Taipei Build Day, 2026-09-20**, typed with one finger. The demo narration is my cloned voice.
 
 ## Verdicts
 

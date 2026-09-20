@@ -76,3 +76,42 @@ export function renderCabinDiagram(input) {
   <text x="${BOX.w / 2}" y="${BOX.h - 6}" text-anchor="middle" font-size="11" fill="#1b1f24">${caption}</text>
 </svg>`;
 }
+
+/**
+ * Street strip for the sideways-link candidate card: same-parity house numbers around the queried one.
+ * nearby: [{ number, devices, elevators, names }] from the registry; queried: the number typed;
+ * candidates: numbers that hold the candidate elevators. Fixed size, pure inline SVG.
+ */
+export const MAP_BOX = { w: 560, h: 120 };
+export function renderStreetMap({ queried, candidates = [], nearby = [], streetEn = '' }) {
+  const nums = new Set([queried, ...candidates, ...nearby.map((n) => n.number)]);
+  for (let d = -4; d <= 4; d += 2) nums.add(queried + d);
+  const list = [...nums].filter((n) => n > 0 && Math.abs(n - queried) <= 6).sort((a, b) => a - b);
+  const by = Object.fromEntries(nearby.map((n) => [n.number, n]));
+  const slotW = Math.min(96, Math.floor((MAP_BOX.w - 20) / list.length));
+  const x0 = (MAP_BOX.w - slotW * list.length) / 2;
+  const boxes = list.map((n, i) => {
+    const x = x0 + i * slotW + 6, w = slotW - 12, y = 30, h = 52;
+    const info = by[n];
+    const isQ = n === queried, isC = candidates.includes(n);
+    const fill = isC ? '#1f8a4c' : isQ ? '#5b6470' : info ? '#dfe3e8' : 'none';
+    const stroke = isC ? '#1f8a4c' : isQ ? '#5b6470' : '#b9c0c8';
+    const dash = info ? '' : 'stroke-dasharray="4 3"';
+    const txt = isC || isQ ? '#fff' : '#1b1f24';
+    const line2 = isC ? `${info?.elevators ?? candidates.length} elevator${(info?.elevators ?? 1) === 1 ? '' : 's'}` : isQ ? `${info?.devices ?? 0} parking` : info ? `${info.elevators} elev / ${info.devices} dev` : 'no record';
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="2" ${dash}/>
+      <text x="${x + w / 2}" y="${y + 22}" text-anchor="middle" font-size="15" font-weight="700" fill="${txt}">No. ${n}</text>
+      <text x="${x + w / 2}" y="${y + 40}" text-anchor="middle" font-size="10.5" fill="${txt}">${line2}</text>`;
+  }).join('');
+  const qi = list.indexOf(queried), ci = candidates.length ? list.indexOf(candidates[0]) : -1;
+  const link = qi >= 0 && ci >= 0 ? (() => {
+    const xa = x0 + qi * slotW + slotW / 2, xb = x0 + ci * slotW + slotW / 2;
+    return `<path d="M${xa},${100} C${xa},${118} ${xb},${118} ${xb},${100}" fill="none" stroke="#1f8a4c" stroke-width="2" stroke-dasharray="5 4"/>
+      <text x="${(xa + xb) / 2}" y="${116}" text-anchor="middle" font-size="10.5" fill="#1f8a4c" style="paint-order:stroke" stroke="#fff" stroke-width="3">same occupancy permit</text>`;
+  })() : '';
+  return `<svg class="street-map" width="${MAP_BOX.w}" height="${MAP_BOX.h}" viewBox="0 0 ${MAP_BOX.w} ${MAP_BOX.h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="street map of nearby house numbers">
+  <text x="${MAP_BOX.w / 2}" y="16" text-anchor="middle" font-size="12" fill="#5b6470">${streetEn ? streetEn + ' — ' : ''}same side of the street (${queried % 2 ? 'odd' : 'even'} numbers), registry records</text>
+  <line x1="10" y1="92" x2="${MAP_BOX.w - 10}" y2="92" stroke="#b9c0c8" stroke-width="3"/>
+  ${boxes}${link}
+</svg>`;
+}

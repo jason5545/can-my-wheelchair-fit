@@ -40,3 +40,11 @@ test('svg has fixed width/height and fits the box', () => {
     assert.ok(l.chair.y + l.chair.h <= BOX.h && l.chair.x >= 0 && l.chair.x + l.chair.w <= BOX.w);
   }
 });
+
+test('street map: queried + candidate boxes, link label, fixed size', async () => {
+  const { renderStreetMap, MAP_BOX } = await import('../src/diagram.mjs');
+  const svg = renderStreetMap({ queried: 215, candidates: [217], nearby: [{ number: 215, devices: 9, elevators: 0, names: ['X'] }, { number: 217, devices: 2, elevators: 2, names: ['Y'] }], streetEn: 'Sec. 2, Chengde Rd.' });
+  assert.match(svg, new RegExp(`width="${MAP_BOX.w}" height="${MAP_BOX.h}"`));
+  assert.match(svg, /No\. 215/); assert.match(svg, /No\. 217/); assert.match(svg, /9 parking/); assert.match(svg, /2 elevators/); assert.match(svg, /same occupancy permit/);
+  assert.equal(renderStreetMap({ queried: 215 }), renderStreetMap({ queried: 215 }));
+});

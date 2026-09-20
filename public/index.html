@@ -44,6 +44,7 @@
   #captcha.on { display:flex; }
   #captcha img { height:52px; border:1px solid var(--line); border-radius:6px; background:#fff; }
   #captcha input { width:140px; }
+  .map { width:560px; height:120px; max-width:100%; overflow:hidden; margin:4px 0 8px; }
   .candidate { border:2px solid var(--line); border-radius:12px; padding:14px 16px; margin:10px 0; background:#fafbfc; }
   .candidate.STRONG { border-color:var(--fits); }
   .candidate.MEDIUM { border-color:var(--straight); }
@@ -139,7 +140,7 @@
 <script type="module">
 import { judgeBuilding } from '/src/judge.mjs';
 import { CHAIR_PRESETS } from '/src/chairs.mjs';
-import { renderCabinDiagram } from '/src/diagram.mjs';
+import { renderCabinDiagram, renderStreetMap } from '/src/diagram.mjs';
 
 const $ = (id) => document.getElementById(id);
 const addr = $('address-input'), floor = $('floor-input'), sel = $('wheelchair-select'), btn = $('check-button');
@@ -200,7 +201,8 @@ function renderVerdict(r) {
     </div>
     <p class="note">${esc((ev.notes || []).join(' '))} Cabin size is a reference estimate from the JIS A 4301 capacity class (${esc(ev.code)}); the turning rule (2 × radius) is our own reference threshold.</p>`;
   } else if (r.candidates && r.candidates.length) {
-    evidence = r.candidates.map((c, i) => `<div class="candidate ${c.strength}">
+    const candNums = r.candidates.map((c) => Number((c.address.en.match(/No\. (\d+)/) || [])[1])).filter(Boolean);
+    evidence = (r.address.number ? `<div class="map">${renderStreetMap({ queried: r.address.number, candidates: candNums, nearby: r.nearby || [], streetEn: r.street?.en || '' })}</div>` : '') + r.candidates.map((c, i) => `<div class="candidate ${c.strength}">
       <div class="cand-head"><span class="strength">${esc(c.strength)}</span> <b>${esc(c.building.en)}</b> — ${esc(c.address.en)} · ${c.elevators.length} elevator(s), permit ${esc(c.building.licenseLabel)}</div>
       <div class="cand-why">${esc(c.why)}</div>
       <div class="cand-spec">${c.elevators.map((e) => `${esc(e.id)} · ${esc(e.spec)} · ${esc(e.floors)}`).join('<br>')}</div>

@@ -112,6 +112,7 @@ async function sidewaysCandidates(registry, a, parkingRows, opts) {
     for (const row of r?.rows ?? []) if (ELEVATOR_PREFIX.test(row.id)) found.set(row.id, { row, source: 'license' });
   }
   // Street segment without a number, both numeral forms (they are disjoint sets), same parity within ±4.
+  const nearby = new Map(); // number → { devices, elevators, names }
   if (number != null) {
     for (const sectionForm of ['zh', 'digit']) {
       const seg = formatStreet(a.parsed, { sectionForm, withNumber: false });
@@ -119,6 +120,10 @@ async function sidewaysCandidates(registry, a, parkingRows, opts) {
       steps.push({ step: 'segment', query: seg, rows: r ? r.rows.length : null, cached: r?.cached ?? false, skipped: !r });
       for (const row of r?.rows ?? []) {
         const n = numberOf(row.address);
+        if (n != null && n % 2 === number % 2 && Math.abs(n - number) <= 6) {
+          if (!nearby.has(n)) nearby.set(n, { number: n, devices: 0, elevators: 0, names: new Set() });
+          const nb = nearby.get(n); nb.devices++; if (ELEVATOR_PREFIX.test(row.id)) nb.elevators++; nb.names.add(romanizeBuilding(row.buildingName));
+        }
         if (!ELEVATOR_PREFIX.test(row.id) || n == null || n === number || n % 2 !== number % 2 || Math.abs(n - number) > 4) continue;
         if (PARK_OR_LOT.test(row.buildingName)) continue;
         if (!found.has(row.id)) found.set(row.id, { row, source: 'segment' });
@@ -149,7 +154,8 @@ async function sidewaysCandidates(registry, a, parkingRows, opts) {
   }
   const rank = { STRONG: 0, MEDIUM: 1, WEAK: 2 };
   const candidates = [...groups.values()].sort((x, y) => rank[x.strength] - rank[y.strength]);
-  return { candidates, steps, skipped, anchor: { building: { zh: anchorName, en: romanizeBuilding(anchorName), licenseNo: anchorDetail?.licenseNo ?? '', licenseLabel: licenseLabel(anchorDetail?.licenseNo) }, parkingUnits: parkingRows.length } };
+  const nearbyList = [...nearby.values()].sort((x, y) => x.number - y.number).map((n) => ({ ...n, names: [...n.names] }));
+  return { candidates, steps, skipped, nearby: nearbyList, anchor: { building: { zh: anchorName, en: romanizeBuilding(anchorName), licenseNo: anchorDetail?.licenseNo ?? '', licenseLabel: licenseLabel(anchorDetail?.licenseNo) }, parkingUnits: parkingRows.length } };
 }
 
 /** Main entry: { address, floor, chair, live } → result JSON. */
@@ -201,7 +207,7 @@ export async function check(registry, { address, floor, chair = 'Leon', live = f
             'Is this your building? Confirm below and the verdict is computed for that building. The machine ranks evidence; you make the call.',
           ],
           candidates: side.candidates.map((c) => ({ ...c, elevators: c.elevators.map((e) => ({ id: e.id, spec: e.spec.raw, floors: e.floors })) })),
-          anchor: side.anchor, building: null,
+          anchor: side.anchor, nearby: side.nearby, street: { en: romanizeParsed({ ...a, parsed: { ...a.parsed, number: null, sub: null } }) }, building: null,
           evidence: { counts: { rows: rows.length, elevators: 0, servingFloor: 0 } }, elevators: [], otherElevators: [],
         };
       }
