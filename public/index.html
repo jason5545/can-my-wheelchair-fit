@@ -60,6 +60,11 @@
   .chair-fig img { width:120px; height:110px; object-fit:contain; }
   .chair-fig figcaption { font-size:12px; color:var(--muted); }
   @media (max-width:760px) { .split { flex-wrap:wrap; } }
+  .legend { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:12px; }
+  .lg { border:1px solid var(--line); border-top:5px solid var(--line); border-radius:10px; padding:10px 12px; background:#fafbfc; display:flex; flex-direction:column; gap:3px; font-size:13px; color:var(--muted); }
+  .lg b { color:var(--ink); font-size:15px; }
+  .lg-icon { font-size:22px; line-height:1; }
+  .lg.FITS { border-top-color:var(--fits); } .lg.STRAIGHT_IN { border-top-color:var(--straight); } .lg.SQUEEZE { border-top-color:var(--squeeze); } .lg.CANT_ENTER { border-top-color:var(--cant); } .lg.NO_ELEVATOR { border-top-color:var(--none); }
   .status { font-size:13px; color:var(--muted); margin-top:10px; }
   @media (max-width:760px) { form { grid-template-columns:1fr 1fr; } form > .addr { grid-column:1 / -1; } }
 </style>
@@ -115,7 +120,17 @@
 
   <section id="result-card" data-testid="result-card">
     <p id="result-verdict" data-testid="result-verdict"></p>
-    <div id="result-body"><p class="placeholder">Enter an address and a floor, then press Check.</p></div>
+    <div id="result-body">
+      <p class="placeholder">Enter an address and a floor, then press Check. Five possible answers:</p>
+      <div class="legend">
+        <div class="lg FITS"><span class="lg-icon">✅</span><b>FITS</b><span>Through the door, fits inside, room to turn</span></div>
+        <div class="lg STRAIGHT_IN"><span class="lg-icon">⚠️</span><b>STRAIGHT-IN ONLY</b><span>Fits, but ride in and back out — no turning</span></div>
+        <div class="lg SQUEEZE"><span class="lg-icon">⚠️❌</span><b>SQUEEZE</b><span>Cabin shorter than the chair — footrests off</span></div>
+        <div class="lg CANT_ENTER"><span class="lg-icon">❌</span><b>CAN'T ENTER</b><span>Door narrower than the chair</span></div>
+        <div class="lg NO_ELEVATOR"><span class="lg-icon">❌</span><b>NO ELEVATOR</b><span>Nothing registered, or no car serves that floor</span></div>
+      </div>
+      <p class="note">Source: Taiwan's national elevator registry, decoded with the JIS A 4301 cabin table. Every answer shows its evidence.</p>
+    </div>
   </section>
   <p class="status" id="status"></p>
 </main>
