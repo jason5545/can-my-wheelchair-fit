@@ -43,6 +43,15 @@
   #captcha.on { display:flex; }
   #captcha img { height:52px; border:1px solid var(--line); border-radius:6px; background:#fff; }
   #captcha input { width:140px; }
+  .candidate { border:2px solid var(--line); border-radius:12px; padding:14px 16px; margin:10px 0; background:#fafbfc; }
+  .candidate.STRONG { border-color:var(--fits); }
+  .candidate.MEDIUM { border-color:var(--straight); }
+  .strength { display:inline-block; font-size:12px; font-weight:800; letter-spacing:.5px; padding:2px 8px; border-radius:6px; background:var(--none); color:#fff; margin-right:6px; }
+  .STRONG .strength { background:var(--fits); } .MEDIUM .strength { background:var(--straight); }
+  .cand-head { font-size:16px; margin-bottom:6px; }
+  .cand-why { color:var(--ink); margin-bottom:6px; }
+  .cand-spec { font-family:ui-monospace, Menlo, monospace; font-size:13px; color:var(--muted); margin-bottom:12px; }
+  button.confirm { font-size:18px; padding:16px 26px; width:100%; background:var(--fits); }
   .status { font-size:13px; color:var(--muted); margin-top:10px; }
   @media (max-width:760px) { form { grid-template-columns:1fr 1fr; } form > .addr { grid-column:1 / -1; } }
 </style>
@@ -103,7 +112,7 @@
 </main>
 
 <script type="module">
-import { judgeCabin } from '/src/judge.mjs';
+import { judgeBuilding } from '/src/judge.mjs';
 import { CHAIR_PRESETS } from '/src/chairs.mjs';
 
 const $ = (id) => document.getElementById(id);
@@ -147,21 +156,30 @@ function renderVerdict(r) {
       <div><span>Floors served</span>${esc(ev.floors)}</div>
       <div><span>Elevators serving floor</span>${ev.counts.servingFloor} of ${ev.counts.elevators} (${ev.counts.rows} registered devices)</div>
       <div><span>Device ID</span>${esc(ev.deviceId)}</div>
-      <div><span>Building permit</span>${esc(r.building?.licenseNo)}</div>
+      <div><span>Occupancy permit</span>${esc(r.building?.licenseLabel)}</div>
     </div>
     <p class="note">${esc((ev.notes || []).join(' '))} Cabin size is a reference estimate from the JIS A 4301 capacity class (${esc(ev.code)}); the turning rule (2 × radius) is our own reference threshold.</p>`;
+  } else if (r.candidates && r.candidates.length) {
+    evidence = r.candidates.map((c, i) => `<div class="candidate ${c.strength}">
+      <div class="cand-head"><span class="strength">${esc(c.strength)}</span> <b>${esc(c.building.en)}</b> — ${esc(c.address.en)} · ${c.elevators.length} elevator(s), permit ${esc(c.building.licenseLabel)}</div>
+      <div class="cand-why">${esc(c.why)}</div>
+      <div class="cand-spec">${c.elevators.map((e) => `${esc(e.id)} · ${esc(e.spec)} · ${esc(e.floors)}`).join('<br>')}</div>
+      <button type="button" class="confirm" data-address="${esc(c.address.en)}">Yes, this is my building — check floor ${r.floor}</button>
+    </div>`).join('') + `<p class="note">If unsure, check the permit sticker inside the elevator car on site (it carries the device ID and a QR code) — that sticker is the ground truth.</p>`;
   } else if (ev.counts) {
     evidence = `<p class="note">Registry devices at this address: ${ev.counts.rows}; passenger elevators: ${ev.counts.elevators}.</p>`;
   }
+  if (r.otherBuildings && r.otherBuildings.length) evidence += `<p class="note">Other buildings registered at this address: ${r.otherBuildings.map((b) => `${esc(b.en)} (${b.elevators} elevators)`).join(', ')}.</p>`;
   setCard(r.verdictKey, `${r.icon} ${r.verdict}`, where + why + evidence);
+  for (const b of body.querySelectorAll('button.confirm')) b.addEventListener('click', () => { addr.value = b.dataset.address; run(); });
 }
 
 /** Recompute the verdict for the current chair from the last result, without re-querying. */
 function recompute() {
   if (!last || !last.elevators || !last.elevators.length) return;
   const c = chair();
-  const judged = last.elevators.map((e) => ({ e, v: judgeCabin(e.cabin, c) })).sort((a, b) => a.v.rank - b.v.rank);
-  const best = judged[0];
+  const top = judgeBuilding(last.elevators, c)[0];
+  const best = { e: top.elevator, v: top.verdict };
   const r = { ...last, verdict: best.v.label, icon: best.v.icon, verdictKey: best.v.key, reasons: best.v.reasons, chair: c,
     building: { zh: best.e.buildingName, en: best.e.buildingNameEn, licenseNo: best.e.licenseNo },
     evidence: { ...last.evidence, spec: best.e.spec.raw, code: best.e.spec.code, cabin: best.e.cabin, door: best.e.cabin.door, chair: c, floors: best.e.floors, deviceId: best.e.id, notes: best.e.cabin.notes } };

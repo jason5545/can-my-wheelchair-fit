@@ -46,6 +46,7 @@ setRecent([
   { address: '臺北市大安區忠孝東路三段54號', floor: 4 },
   { address: '臺北市北投區振華街', floor: 3 },
   { address: '臺北市大同區承德路二段217號', floor: 7 },
+  { address: '臺北市大同區承德路二段215號', floor: 7 },
 ].map((r) => ({ ...r, english: romanizeAddress(r.address) })));
 
 console.log(`seeded ${lists} list queries and ${details} detail pages`);

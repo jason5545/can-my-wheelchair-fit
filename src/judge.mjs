@@ -50,9 +50,15 @@ export function cabinForSpec(spec, { licenseYear } = {}) {
   return { width: c.width, depth: c.depth, door: c.door, source: c.source, classPersons: c.classPersons, notes };
 }
 
-/** Best verdict across the elevators that serve the floor; returns null when none does. */
+/**
+ * Rank the elevators that serve the floor for this chair: best verdict first; among equal verdicts
+ * the roomiest car (largest short side, then area) so the card stays on the same elevator when the
+ * chair changes. Returns [{ elevator, verdict }].
+ */
 export function judgeBuilding(elevators, chair) {
   const judged = elevators.map((e) => ({ elevator: e, verdict: judgeCabin(e.cabin, chair) }));
-  judged.sort((a, b) => a.verdict.rank - b.verdict.rank);
+  const short = (e) => Math.min(e.cabin.width, e.cabin.depth);
+  const area = (e) => e.cabin.width * e.cabin.depth;
+  judged.sort((a, b) => a.verdict.rank - b.verdict.rank || short(b.elevator) - short(a.elevator) || area(b.elevator) - area(a.elevator));
   return judged;
 }
