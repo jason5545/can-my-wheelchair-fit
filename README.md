@@ -12,7 +12,7 @@ Built solo in 90 minutes at **Claude Taipei Build Day, 2026-09-20**, typed with 
 > **Status: frozen as submitted.** This repository is the Build Day entry exactly as demoed — the code
 > stops at commit `db53c70` (2026-09-20 18:38); the only later change is this note. Work after the event
 > (A → B sidewalk routing and road-traffic risk for Taipei) continues in a separate project,
-> [Wheelchair Last 100 m](https://github.com/jason5545/wheelchair-last-100m).
+> Wheelchair Last 100 m.
 
 ## Verdicts
 
